@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600"></canvas>
+<script>
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+    setInterval(() => {
+        renderClock();
+    }, 1000);
+    renderClock();
+
+    function renderClock() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+
+        ctx.translate(400, 300);
+        ctx.strokeStyle = "darkgrey";
+        ctx.lineWidth = 10;
+        ctx.rotate(-2 * Math.PI / 4)
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0, 0, 200, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        for (let i = 0; i < 12; i++) {
+            ctx.rotate(Math.PI / 6);
+            ctx.beginPath();
+            ctx.moveTo(175, 0);
+            ctx.lineTo(200, 0);
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "orange";
+        for (let i = 0; i < 60; i++) {
+            if (i % 5 !== 0) {
+                ctx.beginPath();
+                ctx.moveTo(180, 0);
+                ctx.lineTo(190, 0);
+                ctx.stroke();
+            }
+            ctx.rotate(Math.PI / 30);
+        }
+        ctx.restore();
+
+        let time = new Date();
+        let sec = time.getSeconds();
+        let min = time.getMinutes();
+        let hour = time.getHours();
+        hour = hour > 12 ? hour - 12 : hour;
+        console.log(hour + ":" + min + ":" + sec);
+
+        ctx.save();
+        ctx.rotate(sec * 2 * Math.PI / 60)
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "red";
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.lineTo(170, 0);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "darkblue";
+        ctx.rotate(min * 2 * Math.PI / 60 + sec * 2 * Math.PI / 3600);
+        ctx.beginPath();
+        ctx.moveTo(-20, 0);
+        ctx.lineTo(160, 0);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = "#bfa";
+        ctx.rotate(hour * 2 * Math.PI / 12 + min * 2 * Math.PI / 12 / 60 + sec * 2 * Math.PI / 12 / 60 / 60);
+        ctx.beginPath();
+        ctx.moveTo(-10, 0);
+        ctx.lineTo(140, 0);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = "deepskyblue";
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.restore();
+    }
+</script>
+</body>
+</html>
