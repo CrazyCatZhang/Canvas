@@ -92,9 +92,10 @@ window.addEventListener('load', () => {
     });
     downBtn.addEventListener('click', evt => {
         let url = canvas.toDataURL()
-        let img = new Image();
-        img.url = url;
-        
+        let aDom = document.querySelector(".download a");
+        console.log(aDom);
+        aDom.setAttribute("href", url);
+        aDom.click();
     });
 
     canvas.addEventListener('mouseup', evt => {
