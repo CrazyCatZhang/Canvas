@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+	<title></title>
+	<style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #wrap, ul, ul > li {
+            height: 100%;
+        }
+
+        ul > li {
+            background: url(img/b.png);
+            background-size: 100% 100%;
+        }
+
+        canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: 1s;
+        }
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<canvas></canvas>
+	<ul>
+		<li></li>
+	</ul>
+</div>
+</body>
+<script>
+    window.addEventListener('load', event => {
+        let canvas = document.querySelector("canvas");
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+        let ctx = canvas.getContext("2d");
+        let img = new Image();
+        img.src = "img/a.png";
+        img.addEventListener('load', () => {
+            draw();
+        });
+
+        function draw() {
+            let flag = 0;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.addEventListener('touchstart', event => {
+                let touch = event.changedTouches[0];
+                let x = touch.clientX - canvas.offsetLeft;
+                let y = touch.clientY - canvas.offsetTop;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 40;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + 1, y + 1)
+                ctx.stroke();
+                ctx.restore();
+            });
+
+            canvas.addEventListener('touchmove', event => {
+                let touch = event.changedTouches[0];
+                let x = touch.clientX - canvas.offsetLeft;
+                let y = touch.clientY - canvas.offsetTop;
+                ctx.save();
+                ctx.lineTo(x, y)
+                ctx.stroke();
+                ctx.restore();
+            });
+
+            canvas.addEventListener('touchend', event => {
+                let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                let length = imgData.height * imgData.width;
+                for (let i = 0; i < length; i++) {
+                    if (imgData.data[4 * i + 3] === 0) {
+                        flag++;
+                    }
+                }
+                if (flag >= length / 2) {
+                    canvas.style.opacity = 0;
+                }
+            });
+
+            canvas.addEventListener('transitionend', function () {
+                // this.remove();
+                this.parentNode.removeChild(this);
+            });
+        }
+    });
+</script>
+</html>
